@@ -9,6 +9,18 @@ router.get('/allpost',requirelogin,(req,res)=>{
     Post.find()
     .populate('postedby',"name _id pic")
     .populate("comments.postedby","name _id")
+    .sort('-createdAt')
+    .then(posts=>{
+        res.json({posts})
+    }).catch(err=>{
+        console.log(err)
+    })
+})
+// Get all posts of Followings
+router.get('/followingposts',requirelogin,(req,res)=>{
+    Post.find({postedby:{$in:req.user.following}})
+    .populate('postedby',"name _id pic")
+    .populate("comments.postedby","name _id")
     .then(posts=>{
         res.json({posts})
     }).catch(err=>{
@@ -18,7 +30,6 @@ router.get('/allpost',requirelogin,(req,res)=>{
 // Post CreatPost
 router.post('/creatpost',requirelogin,(req,res)=>{
     const {title,body,photo}=req.body
-    console.log(title,body,photo)
     if(!title || !body || !photo){
         return res.status(422).json({error:"Please fill all the fields"})
     }
@@ -49,7 +60,8 @@ router.put('/like',requirelogin,(req,res)=>{
         $push:{likes:req.user._id}
     },{
         new:true
-    }).exec((err,result)=>{
+    }).populate("postedby",'name _id pic')
+    .exec((err,result)=>{
         if(err){
             return res.status(422).json({error:err})
         }else{
@@ -63,7 +75,8 @@ router.put('/unlike',requirelogin,(req,res)=>{
         $pull:{likes:req.user._id}
     },{
         new:true
-    }).exec((err,result)=>{
+    }).populate("postedby",'name _id pic')
+    .exec((err,result)=>{
         if(err){
             return res.status(422).json({error:err})
         }else{
@@ -81,7 +94,8 @@ router.put('/comment',requirelogin,(req,res)=>{
         $push:{comments:comment}
     },{
         new:true
-    }).populate("comments.postedby","_id name")
+    }).populate('postedby',"name _id pic")
+    .populate("comments.postedby","name _id")
     .exec((err,result)=>{
         if(err){
             return res.status(422).json({error:err})
@@ -99,7 +113,8 @@ router.put('/deletecomment',requirelogin,(req,res)=>{
         $pull:{comments:commentid}
     },{
         new:true
-    }).populate("comments.postedby","_id name")
+    }).populate('postedby',"name _id pic")
+    .populate("comments.postedby","name _id")
     .exec((err,result)=>{
         if(err){
             return res.status(422).json({error:err})
@@ -116,10 +131,9 @@ router.delete("/deletepost/:postid",requirelogin,(req,res)=>{
         if(err || !post){
             return res.status(422).json({error:err})
         }
-        if(post.postedby._id === req.user._id){
+        if(post.postedby._id.toString() === req.user._id.toString()){
             post.remove()
             .then(result=>{
-                // console.log("ccww")
                 res.json(result)
             }).catch(err=>{
                 console.log(err)

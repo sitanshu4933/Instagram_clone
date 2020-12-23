@@ -1,11 +1,23 @@
 import React, { useContext, useState } from 'react';
 import { useEffect } from 'react';
 import { UserContext } from '../../App'
+import Backdrop from '@material-ui/core/Backdrop';
+import { makeStyles } from '@material-ui/core/styles';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
+const useStyles = makeStyles((theme) => ({
+  backdrop: {
+    zIndex: theme.zIndex.drawer + 1,
+    color: '#fff',
+  },
+}));
 const Profile = () => {
   const { state, dispatch } = useContext(UserContext)
   const [mypic, setMypic] = useState([])
   const [image, setImage] = useState()
+  const classes = useStyles();
+  const [open, setOpen] = React.useState(false);
+  const spinner=false
   useEffect(() => {
     fetch("/mypost", {
       headers: {
@@ -13,11 +25,12 @@ const Profile = () => {
       }
     }).then(res => res.json())
       .then(result => {
-        // console.log(result)
+        console.log(result)
         setMypic(result.myposts)
       })
   }, [])
   const updatePhoto = () => {
+    // setOpen(!open)
     const formData = new FormData()
     formData.append("file", image)
     formData.append("upload_preset", "insta-clone")
@@ -28,23 +41,23 @@ const Profile = () => {
     }).then(res => res.json())
       .then(data => {
         console.log(data.url)
-        fetch(`/updatepic`,{
-          method:"put",
+        fetch(`/updatepic`, {
+          method: "put",
           headers: {
             "Content-Type": "application/json",
             "Authorization": "Bearer " + localStorage.getItem("jwt")
           },
-          body:JSON.stringify({
-            pic:data.url
+          body: JSON.stringify({
+            pic: data.url
           })
-        }).then(res=>res.json())
-        .then(result=>{
-          console.log(result)
-          localStorage.setItem("user",JSON.stringify({...state,pic:result.pic}))
-          dispatch({type:"UPDATEPIC",payload:result.pic})
-        }).catch(err => {
-          console.log(err)
-        })
+        }).then(res => res.json())
+          .then(result => {
+            console.log(result)
+            localStorage.setItem("user", JSON.stringify({ ...state, pic: result.pic }))
+            dispatch({ type: "UPDATEPIC", payload: result.pic })
+          }).catch(err => {
+            console.log(err)
+          })
       }).catch(err => {
         console.log(err)
       })
@@ -67,11 +80,12 @@ const Profile = () => {
             <button className="btn waves-effect waves-light #64b5f6 blue lighten-2" type="submit" name="action" onClick={() => updatePhoto()}>Update</button>
           </div>
           <div>
-            <h4>{state.name}</h4>
+            <h4>{state ? state.name : ""}</h4>
+            <h4>{state ? state.email : ""}</h4>
             <div className="profile-status">
               <h5>{mypic.length} posts</h5>
-              {/* <h5>{state.followers.length} followers</h5> */}
-              {/* <h5>{state.following.length} followings</h5> */}
+              <h5>{state ? state.followers ? state.followers.length : '0' : ''} followers</h5>
+              <h5>{state ? state.following ? state.following.length : '0' : ''} followings</h5>
             </div>
           </div>
         </div>
@@ -84,6 +98,9 @@ const Profile = () => {
         }
 
       </div>
+      <Backdrop className={classes.backdrop} open={open} >
+        <CircularProgress color="inherit" />
+      </Backdrop>
     </>
   );
 }

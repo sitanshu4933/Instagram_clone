@@ -20,6 +20,8 @@ const userSchema=new mongoose.Schema({
         default:"https://res.cloudinary.com/sitanshu/image/upload/v1605712607/download_zdiaol.png"
     },
     followers:[{type:ObjectId,ref:"users"}],
-    followings:[{type:ObjectId,ref:"users"}]
+    following:[{type:ObjectId,ref:"users"}],
+    resetToken:String,
+    expireToken:Date
 })
 mongoose.model('users',userSchema)

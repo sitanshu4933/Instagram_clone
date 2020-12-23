@@ -1,7 +1,6 @@
-import React, { useState,useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useHistory } from 'react-router-dom'
 import Alerts from './Alerts'
-// import Alert from '@material-ui/lab/Alert';
 
 
 const Signup = () => {
@@ -11,11 +10,12 @@ const Signup = () => {
   const [email, SetEmail] = useState("")
   const [image, setImage] = useState()
   const [url, setUrl] = useState(undefined)
-  useEffect(()=>{
-    if(url){
+  const [alert, SetAlert] = useState({ isopen: false, type: '', message: '' })
+  useEffect(() => {
+    if (url) {
       uploadFields()
     }
-  },[url])
+  }, [url])
   const uploadPic = () => {
     const formData = new FormData()
     formData.append("file", image)
@@ -35,7 +35,8 @@ const Signup = () => {
   }
   const uploadFields = () => {
     if (!/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(email)) {
-      return <Alerts type="error" message="invalid email" />
+      return SetAlert({ isopen: true, type: "error", message: "Invalid email" })
+
     }
     else {
       fetch("/signup", {
@@ -47,17 +48,19 @@ const Signup = () => {
           name,
           email,
           password,
-          pic:url
+          pic: url
         })
       }).then(res => res.json())
         .then(data => {
           console.log(data)
           if (data.error) {
-            return <Alerts type="error" message={data.error} />
+            return SetAlert({ isopen: true, type: "error", message: data.error })
           }
           else {
-            history.push('/login')
-            // <Alerts type="sucess" message={data.message} />
+            SetAlert({ isopen: true, type: "sucess", message: data.message })
+            setTimeout(() => {
+              history.push('/')
+          }, 4000);
           }
         }).catch(err => {
           console.log(err)
@@ -86,13 +89,14 @@ const Signup = () => {
               <input type="file" onChange={(event) => { setImage(event.target.files[0]) }} />
             </div>
             <div className="file-path-wrapper">
-              <input className="file-path validate" type="text" value={image}/>
+              <input className="file-path validate" type="text" value={image} />
             </div>
           </div>
           <button className="btn waves-effect waves-light #64b5f6 blue lighten-2" type="submit" name="action" onClick={() => PostData()}>Signup</button>
           <Link to="/login"> <h6>Already have an account?click to sign in</h6></Link>
         </div>
       </div>
+      <Alerts alert={alert} Setalert={SetAlert} />
     </>
 
   );

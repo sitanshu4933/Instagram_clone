@@ -62,3 +62,7 @@
     justify-content: space-around;
     max-width: 1200px;
 }
+.link{
+    font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    color: black;
+}

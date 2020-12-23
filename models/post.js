@@ -14,14 +14,17 @@ const postSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    likes:[{type:ObjectId,ref:"users"}],
-    comments:[{
-        text:String,
-        postedby:{type:ObjectId,ref:"users"}
+    likes: [{ type: ObjectId, ref: "users" }],
+    comments: [{
+        text: String,
+        postedby: { type: ObjectId, ref: "users" }
     }],
     postedby: {
         type: ObjectId,
         ref: "users"
     }
-})
+},
+    {
+        timestamps: true
+    })
 mongoose.model("Post", postSchema)

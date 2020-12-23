@@ -7,7 +7,7 @@ export const reducer = (state, action) => {
         return {
             ...state,
             followers: action.payload.followers,
-            following: action.payload.followers
+            following: action.payload.following
         }
     }
     if (action.type === "UPDATEPIC") {

@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 // import clsx from 'clsx';
 import Card from '@material-ui/core/Card';
@@ -20,6 +20,7 @@ import ThumbDownIcon from '@material-ui/icons/ThumbDown';
 import { UserContext } from '../../App'
 import Fab from '@material-ui/core/Fab';
 import DeleteIcon from '@material-ui/icons/Delete';
+import { Link } from 'react-router-dom'
 
 
 const useStyles = makeStyles((theme) => ({
@@ -47,11 +48,22 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function RecipeReviewCard(data) {
+export default function RecipeReviewCard() {
+  const [data, setData] = useState([])
   const classes = useStyles();
   const [expanded, setExpanded] = React.useState(false);
-  const [newData, setData] = useState([])
   const { state, dispatch } = useContext(UserContext)
+  useEffect(() => {
+    fetch('/followingposts', {
+      headers: {
+        "Authorization": "Bearer " + localStorage.getItem("jwt")
+      }
+    }).then(res => res.json())
+      .then(result => {
+        setData(result.posts)
+        // console.log(result.posts)      
+      })
+  }, [])
 
   const handleExpandClick = () => {
     setExpanded(!expanded);
@@ -69,7 +81,8 @@ export default function RecipeReviewCard(data) {
     }).then(res => res.json())
       .then(result => {
         console.log(result)
-        const newData = data.post.map(item => {
+        // console.log(newData?newData:"")
+        const newData = data.map(item => {
           if (item._id == result._id) {
             return result
           } else {
@@ -94,7 +107,7 @@ export default function RecipeReviewCard(data) {
     }).then(res => res.json())
       .then(result => {
         console.log(result)
-        const newData = data.post.map(item => {
+        const newData = data.map(item => {
           if (item._id == result._id) {
             return result
           } else {
@@ -120,7 +133,7 @@ export default function RecipeReviewCard(data) {
     }).then(res => res.json())
       .then(result => {
         console.log(result)
-        const newData = data.post.map(item => {
+        const newData = data.map(item => {
           if (item._id == result._id) {
             return result
           } else {
@@ -141,8 +154,8 @@ export default function RecipeReviewCard(data) {
     }).then(res => res.json())
       .then(result => {
         console.log(result)
-        const newData = data.post.filter(item => {
-         return item._id !== result._id
+        const newData = data.filter(item => {
+          return item._id !== result._id
         })
         setData(newData)
       }).catch(err => {
@@ -163,7 +176,7 @@ export default function RecipeReviewCard(data) {
     }).then(res => res.json())
       .then(result => {
         console.log(result)
-        const newData = data.post.map(item => {
+        const newData = data.map(item => {
           if (item._id == result._id) {
             return result
           } else {
@@ -176,7 +189,7 @@ export default function RecipeReviewCard(data) {
       })
   }
   return (
-    data.post.map(item => {
+    data.map(item => {
       return (
         <Card className={classes.root}>
           <CardHeader
@@ -184,10 +197,10 @@ export default function RecipeReviewCard(data) {
             }
             action={item.postedby._id == state._id &&
               <Fab color="secondary" aria-label="edit">
-                <DeleteIcon onClick={()=>deletepost(item._id)} />
+                <DeleteIcon onClick={() => deletepost(item._id)} />
               </Fab>
             }
-            title={item.postedby.name}
+            title={<Link className="link" to={item.postedby._id !== state._id ? "/profile/" + item.postedby._id : "/profile"}>{item.postedby.name}</Link>}
             subheader={item.title}
           />
           <CardMedia
@@ -218,7 +231,7 @@ export default function RecipeReviewCard(data) {
               item.comments.map(comment => {
                 return (
                   <>
-                  <p><span>{comment.postedby.name}:</span> {comment.text} <DeleteIcon onClick={()=>deletecomment(comment._id,item._id)}/> </p>
+                    <p><span>{comment.postedby.name}:</span> {comment.text} <DeleteIcon onClick={() => deletecomment(comment._id, item._id)} /> </p>
                   </>
                 )
               })
@@ -233,5 +246,5 @@ export default function RecipeReviewCard(data) {
         </Card>
       )
     })
-  );
+  )
 }

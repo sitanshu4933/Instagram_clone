@@ -1,6 +1,8 @@
 import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
+import Snackbar from '@material-ui/core/Snackbar';
 import Alert from '@material-ui/lab/Alert';
+import { makeStyles } from '@material-ui/core/styles';
+
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -11,12 +13,28 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function Alerts(props) {
+export default function CustomizedSnackbars(props) {
   const classes = useStyles();
+  const { alert, setalert } = props
+  console.log(alert)
 
+  const [open, setOpen] = React.useState(alert.isopen);
+
+  const handleClose = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+    setOpen(false) 
+    console.log(typeof(alert.isopen))
+  };
+  console.log(open)
   return (
     <div className={classes.root}>
-      <Alert severity={"error"}>This is an error alert — check it out!</Alert>
+      <Snackbar open={alert.isopen} autoHideDuration={6000}  onClose={handleClose}>
+        <Alert variant="filled" severity={alert.type}  onClose={handleClose} >
+          {alert.message}
+        </Alert>
+      </Snackbar>
     </div>
   );
 }

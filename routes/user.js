@@ -32,7 +32,7 @@ router.put('/follow', requirelogin, (req, res) => {
             return res.status(422).json({ error: err })
         }
         User.findByIdAndUpdate(req.user._id, {
-            $push: { followings: req.body.followId }
+            $push: { following: req.body.followId }
         }, {
             new: true
         }).select("-password")
@@ -52,7 +52,7 @@ router.put('/unfollow', requirelogin, (req, res) => {
             return res.status(422).json({ error: err })
         }
         User.findByIdAndUpdate(req.user._id, {
-            $pull: { followings: req.body.unfollowId }
+            $pull: { following: req.body.unfollowId }
         }, {
             new: true
         }).select("-password")
@@ -68,11 +68,21 @@ router.put("/updatepic", requirelogin, (req, res) => {
         $set: { pic: req.body.pic }
     }, {
         new: true
-    }, (err, result) => {
+    }).select('-password')
+    .exec((err, result)  => {
         if (err) {
             return res.status(422).json({ error: err })
         }
         res.json(result)
+    })
+})
+
+router.post('/search-user',requirelogin,(req,res)=>{
+    let usePattern=new RegExp('^'+req.body.name)
+    User.find({name:{$regex:usePattern,$options:'i'}})
+    .select("_id name")
+    .then(user=>{
+        res.json(user)
     })
 })
 
