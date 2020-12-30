@@ -6,16 +6,12 @@ const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 const { JWT_SECRET } = require('../client/config/keys')
 const requirelogin = require('../middleware/requirelogin')
-const nodemailer = require('nodemailer')
-const sendgridTransport = require('nodemailer-sendgrid-transport')
 const crypto = require('crypto')
-const {SENDGRID_API,EMAIL}=require('../client/config/keys')
+const sgMail = require('@sendgrid/mail')
+const { SENDGRID_API, EMAIL } = require('../client/config/keys')
 
-const transporter = nodemailer.createTransport(sendgridTransport({
-    auth: {
-        api_key: SENDGRID_API
-    }
-}))
+sgMail.setApiKey(SENDGRID_API);
+
 
 router.get('/', (req, res) => {
     res.send("Hello!")
@@ -38,12 +34,17 @@ router.post('/signup', (req, res) => {
                 pic
             })
             user.save().then(user => {
-                transporter.sendMail({
-                    to: user.email,
-                    from: "sitanshu4933@gmail.com",
-                    subject: "signup success",
-                    html: "<h1>Welcome to instagram</h1>"
-                })
+                sgMail
+                    .send({
+                        to: user.email,
+                        from: 'sitanshu4933@gmail.com', // Use the email address or domain you verified above
+                        subject: 'No-reply',
+                        text: 'Signup successfull',
+                        html: '<strong>Welcome to Instagram</strong>',
+                    })
+                    .then(() => { }, error => {
+                        console.log(error);
+                    });
                 res.json({ message: "saved successfully" })
             }).catch(err => {
                 console.log(err)
@@ -68,8 +69,8 @@ router.post('/signin', (req, res) => {
             if (domatch) {
                 // res.json({ message: "successfully signedin" })
                 const token = jwt.sign({ _id: savedUser._id }, JWT_SECRET)
-                const { _id, name, email, pic,following,followers } = savedUser
-                res.json({ token, user: { _id, name, email, pic,following,followers } })
+                const { _id, name, email, pic, following, followers } = savedUser
+                res.json({ token, user: { _id, name, email, pic, following, followers } })
             }
             else {
                 return res.status(422).json({ error: "Invalid email-id or password" })
@@ -98,13 +99,18 @@ router.post('/reset-password', (req, res) => {
                 user.resetToken = token
                 user.expireToken = Date.now() + 3600000
                 user.save().then(result => {
-                    transporter.sendMail({
-                        to: user.email,
-                        from: "sitanshu4933@gmail.com",
-                        subject: "Reset Pasword",
-                        html: `<p>You requested for Password reset</p>
-                          <h5>click this <a href="${EMAIL}/reset/${token}">link  </a> to reset password</h5>`
-                    })
+                    sgMail
+                        .send({
+                            to: user.email,
+                            from: 'sitanshu4933@gmail.com', // Use the email address or domain you verified above
+                            subject: 'No-reply',
+                            text: 'Reset Pasword',
+                            html: `<p>You requested for Password reset</p>
+                        //       <h5>click this <a href="${EMAIL}/reset/${token}">link  </a> to reset password</h5>`,
+                        })
+                        .then(() => { }, error => {
+                            console.log(error);
+                        });
                     res.json({ message: "Check your email" })
                 })
             })

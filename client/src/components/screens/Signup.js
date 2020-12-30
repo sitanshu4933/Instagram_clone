@@ -59,7 +59,7 @@ const Signup = () => {
           else {
             SetAlert({ isopen: true, type: "sucess", message: data.message })
             setTimeout(() => {
-              history.push('/')
+              history.push('/login')
           }, 4000);
           }
         }).catch(err => {
