@@ -16,7 +16,6 @@ const useStyles = makeStyles((theme) => ({
 export default function CustomizedSnackbars(props) {
   const classes = useStyles();
   const { alert, setalert } = props
-  console.log(alert)
 
   const [open, setOpen] = React.useState(alert.isopen);
 
@@ -27,7 +26,6 @@ export default function CustomizedSnackbars(props) {
     setOpen(false) 
     console.log(typeof(alert.isopen))
   };
-  console.log(open)
   return (
     <div className={classes.root}>
       <Snackbar open={alert.isopen} autoHideDuration={6000}  onClose={handleClose}>

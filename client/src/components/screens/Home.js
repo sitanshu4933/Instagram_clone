@@ -190,65 +190,61 @@ export default function RecipeReviewCard() {
       })
   }
   return (
-  <>
-    {!data?<CircularProgress />:data.map(item => {
-      return (
-        <Card className={classes.root}>
-          <CardHeader
-            avatar={<Avatar src={item.postedby.pic} aria-label="recipe" className={classes.avatar} />
-            }
-            action={item.postedby._id == state._id &&
-              <Fab color="secondary" aria-label="edit">
-                <DeleteIcon onClick={() => deletepost(item._id)} />
-              </Fab>
-            }
-            title={<Link className="link" to={item.postedby._id !== state._id ? "/profile/" + item.postedby._id : "/profile"}>{item.postedby.name}</Link>}
-            subheader={item.title}
-          />
-          <CardMedia
-            className={classes.media}
-            image={item.photo}
-            title="Paella dish"
-          />
-          <CardActions disableSpacing>
-            <IconButton aria-label="add to favorites">
-              <FavoriteIcon />
-            </IconButton>
-            {item.likes.includes(state._id) ?
-              <ThumbDownIcon onClick={() => unlikePost(item._id)} /> :
-              <ThumbUpIcon onClick={() => likePost(item._id)} />
-            }
-            <IconButton aria-label="share">
-              <ShareIcon />
-            </IconButton>
-          </CardActions>
-          <CardContent>
-            <Typography variant="body2" color="textSecondary" component="p">
-              {item.likes.length} likes
+    <>
+      {data ? data.map(item => {
+        return (
+          <Card className={classes.root}>
+            <CardHeader
+              avatar={<Avatar src={item.postedby.pic} aria-label="recipe" className={classes.avatar} />
+              }
+              action={item.postedby._id == state._id &&
+                <Fab color="secondary" aria-label="edit">
+                  <DeleteIcon onClick={() => deletepost(item._id)} />
+                </Fab>
+              }
+              title={<Link className="link" to={item.postedby._id !== state._id ? "/profile/" + item.postedby._id : "/profile"}>{item.postedby.name}</Link>}
+              subheader={item.title}
+            />
+            <CardMedia
+              className={classes.media}
+              image={item.photo}
+              title="Paella dish"
+            />
+            <CardActions disableSpacing>
+              <IconButton aria-label="add to favorites">
+                {item.likes.includes(state._id) ?
+                  <ThumbDownIcon onClick={() => unlikePost(item._id)} /> :
+                  <ThumbUpIcon onClick={() => likePost(item._id)} />
+                }
+              </IconButton>
+            </CardActions>
+            <CardContent>
+              <Typography variant="body2" color="textSecondary" component="p">
+                {item.likes.length} likes
             </Typography>
-            <Typography variant="body2" color="textSecondary" component="p">
-              {item.body}
-            </Typography>
-            {
-              item.comments.map(comment => {
-                return (
-                  <>
-                    <p><span>{comment.postedby.name}:</span> {comment.text} <DeleteIcon onClick={() => deletecomment(comment._id, item._id)} /> </p>
-                  </>
-                )
-              })
-            }
-            <form onSubmit={(event) => {
-              event.preventDefault()
-              makecomment(event.target[0].value, item._id)
-            }}>
-              <input type="text" placeholder="Enter your comments" />
-            </form>
-          </CardContent>
-        </Card>
-      )
-    })
-   } 
-   </>
+              <Typography variant="body2" color="textSecondary" component="p">
+                {item.body}
+              </Typography>
+              {
+                item.comments.map(comment => {
+                  return (
+                    <>
+                      <p><span>{comment.postedby.name}:</span> {comment.text} <DeleteIcon onClick={() => deletecomment(comment._id, item._id)} /> </p>
+                    </>
+                  )
+                })
+              }
+              <form onSubmit={(event) => {
+                event.preventDefault()
+                makecomment(event.target[0].value, item._id)
+              }}>
+                <input type="text" placeholder="Enter your comments" />
+              </form>
+            </CardContent>
+          </Card>
+        )
+      }) : <CircularProgress />
+      }
+    </>
   )
 }
