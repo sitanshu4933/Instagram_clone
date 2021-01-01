@@ -2,14 +2,26 @@ import React, { useEffect, useState } from 'react'
 import TextField from '@material-ui/core/TextField';
 import Alerts from './Alerts'
 import { useHistory } from 'react-router-dom'
+import Backdrop from '@material-ui/core/Backdrop';
+import { makeStyles } from '@material-ui/core/styles';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
-
+const useStyles = makeStyles((theme) => ({
+    backdrop: {
+        zIndex: theme.zIndex.drawer + 1,
+        color: '#fff',
+    },
+}));
 const CreatPost = () => {
     const history = useHistory()
     const [title, setTitle] = useState("")
     const [body, setBody] = useState("")
     const [image, setImage] = useState("")
     const [url, setUrl] = useState("")
+    const [alert, SetAlert] = useState({ isopen: false, type: '', message: '' })
+    const classes = useStyles();
+    const [open, setOpen] = React.useState(false);
+
 
     useEffect(() => {
         if (url) {
@@ -31,8 +43,10 @@ const CreatPost = () => {
                         return <Alerts type="error" message="Error" />
                     }
                     else {
-                        history.push('/')
-                        // <Alerts type="sucess" message="Created post successfully" />
+                        SetAlert({ isopen: true, type: "success", message: "Post created successfully" })
+                        setTimeout(() => {
+                            history.push('/')
+                        }, 4000);
                     }
                 }).catch(err => {
                     console.log(err)
@@ -40,6 +54,7 @@ const CreatPost = () => {
         }
     }, [url])
     const postDetails = () => {
+        setOpen(!open)
         const formData = new FormData()
         formData.append("file", image)
         formData.append("upload_preset", "insta-clone")
@@ -58,20 +73,23 @@ const CreatPost = () => {
     return (
         <>
             <div className="card input-filed">
-                <TextField id="standard-basic" label="Title" value={title} onChange={(event) => { setTitle(event.target.value) }} />
-                <TextField id="standard-basic" label="Body" value={body} onChange={(event) => { setBody(event.target.value) }} />
+                <TextField label="Title" value={title} onChange={(event) => { setTitle(event.target.value) }} />
+                <TextField label="Body" value={body} onChange={(event) => { setBody(event.target.value) }} />
                 <div className="file-field input-field">
                     <div className="btn">
                         <span>Upload Image</span>
-                        <input type="file"  onChange={(event) => { setImage(event.target.files[0]) }} />
+                        <input type="file" onChange={(event) => { setImage(event.target.files[0]) }} />
                     </div>
                     <div className="file-path-wrapper">
                         <input className="file-path validate" type="text" />
                     </div>
                 </div>
                 <button className="btn waves-effect waves-light #64b5f6 blue lighten-2" type="submit" name="action" onClick={() => postDetails()} >Submit</button>
-
             </div>
+            <Alerts alert={alert} Setalert={SetAlert} />
+            <Backdrop className={classes.backdrop} open={open} >
+                <CircularProgress color="inherit" />
+            </Backdrop>
         </>
     )
 }
