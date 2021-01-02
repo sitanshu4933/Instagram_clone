@@ -1,5 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Grand+Hotel&display=swap');
-
+*{
+    font-family: 'Roboto', sans-serif;
+}
 .brand-logo{
     font-family: 'Grand Hotel', cursive;
 
@@ -37,6 +39,9 @@
     margin-right: 20%;
 
 }
+.profile h4{
+    margin: 10px 0px;
+}
 .profile-status{
     display: flex;
     justify-content: space-between;
@@ -66,3 +71,11 @@
     font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
     color: black;
 }
+nav ul a{
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size:larger;
+}
+.MuiListItemText-root{
+    color: black;
+}
+

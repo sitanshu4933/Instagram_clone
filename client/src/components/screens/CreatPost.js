@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react'
-import TextField from '@material-ui/core/TextField';
 import Alerts from './Alerts'
 import { useHistory } from 'react-router-dom'
 import Backdrop from '@material-ui/core/Backdrop';
@@ -72,20 +71,25 @@ const CreatPost = () => {
     }
     return (
         <>
-            <div className="card input-filed">
-                <TextField label="Title" value={title} onChange={(event) => { setTitle(event.target.value) }} />
-                <TextField label="Body" value={body} onChange={(event) => { setBody(event.target.value) }} />
-                <div className="file-field input-field">
-                    <div className="btn">
-                        <span>Upload Image</span>
-                        <input type="file" onChange={(event) => { setImage(event.target.files[0]) }} />
-                    </div>
-                    <div className="file-path-wrapper">
-                        <input className="file-path validate" type="text" />
+
+            {
+                <div className="mycard ">
+                    <div className="card auth-card input-field">
+                        <input type="text" placeholder="Title" value={title} onChange={(event) => setTitle(event.target.value)} ></input>
+                        <input type="text" placeholder="Body" value={body} onChange={(event) => setBody(event.target.value)} ></input>
+                        <div className="file-field input-field">
+                            <div className="btn">
+                                <span>Upload Image</span>
+                                <input type="file" onChange={(event) => { setImage(event.target.files[0])}} />
+                            </div>
+                            <div className="file-path-wrapper">
+                                <input className="file-path validate" type="text"  />
+                            </div>
+                        </div>
+                        <button className="btn waves-effect waves-light #64b5f6 blue lighten-2" type="submit" name="action" onClick={() => postDetails()}>Submit</button>
                     </div>
                 </div>
-                <button className="btn waves-effect waves-light #64b5f6 blue lighten-2" type="submit" name="action" onClick={() => postDetails()} >Submit</button>
-            </div>
+            }
             <Alerts alert={alert} Setalert={SetAlert} />
             <Backdrop className={classes.backdrop} open={open} >
                 <CircularProgress color="inherit" />
