@@ -57,7 +57,7 @@ const Signup = () => {
             return SetAlert({ isopen: true, type: "error", message: data.error })
           }
           else {
-            SetAlert({ isopen: true, type: "sucess", message: data.message })
+            SetAlert({ isopen: true, type: "success", message: data.message })
             setTimeout(() => {
               history.push('/login')
           }, 4000);

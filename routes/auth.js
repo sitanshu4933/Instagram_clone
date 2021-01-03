@@ -99,7 +99,7 @@ router.post('/reset-password', (req, res) => {
                 user.save().then(result => {
                     sgMail
                         .send({
-                            to: user.email,
+                            to: req.body.email,
                             from: 'sitanshu4933@gmail.com', // Use the email address or domain you verified above
                             subject: 'No-reply',
                             text: 'Reset Pasword',

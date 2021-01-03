@@ -1,9 +1,12 @@
 import React, { useContext, useState } from 'react';
 import { useEffect } from 'react';
+import { useHistory } from 'react-router-dom'
 import { UserContext } from '../../App'
 import Backdrop from '@material-ui/core/Backdrop';
 import { makeStyles } from '@material-ui/core/styles';
 import CircularProgress from '@material-ui/core/CircularProgress';
+import Alerts from './Alerts'
+
 
 const useStyles = makeStyles((theme) => ({
   backdrop: {
@@ -12,12 +15,13 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 const Profile = () => {
+  const history = useHistory()
   const { state, dispatch } = useContext(UserContext)
   const [mypic, setMypic] = useState([])
   const [image, setImage] = useState()
   const classes = useStyles();
   const [open, setOpen] = React.useState(false);
-  const spinner=false
+  const [alert, SetAlert] = useState({ isopen: false, type: '', message: '' })
   useEffect(() => {
     fetch("/mypost", {
       headers: {
@@ -30,37 +34,44 @@ const Profile = () => {
       })
   }, [])
   const updatePhoto = () => {
-    // setOpen(!open)
-    const formData = new FormData()
-    formData.append("file", image)
-    formData.append("upload_preset", "insta-clone")
-    formData.append("cloud_name", "sitanshu")
-    fetch("https://api.cloudinary.com/v1_1/sitanshu/image/upload", {
-      method: 'post',
-      body: formData
-    }).then(res => res.json())
-      .then(data => {
-        console.log(data.url)
-        fetch(`/updatepic`, {
-          method: "put",
-          headers: {
-            "Content-Type": "application/json",
-            "Authorization": "Bearer " + localStorage.getItem("jwt")
-          },
-          body: JSON.stringify({
-            pic: data.url
-          })
-        }).then(res => res.json())
-          .then(result => {
-            console.log(result)
-            localStorage.setItem("user", JSON.stringify({ ...state, pic: result.pic }))
-            dispatch({ type: "UPDATEPIC", payload: result.pic })
-          }).catch(err => {
-            console.log(err)
-          })
-      }).catch(err => {
-        console.log(err)
-      })
+    if (!image) {
+      return SetAlert({ isopen: true, type: "error", message: "Please select an image" })
+    } else {
+      setOpen(!open)
+      const formData = new FormData()
+      formData.append("file", image)
+      formData.append("upload_preset", "insta-clone")
+      formData.append("cloud_name", "sitanshu")
+      fetch("https://api.cloudinary.com/v1_1/sitanshu/image/upload", {
+        method: 'post',
+        body: formData
+      }).then(res => res.json())
+        .then(data => {
+          console.log(data.url)
+          fetch(`/updatepic`, {
+            method: "put",
+            headers: {
+              "Content-Type": "application/json",
+              "Authorization": "Bearer " + localStorage.getItem("jwt")
+            },
+            body: JSON.stringify({
+              pic: data.url
+            })
+          }).then(res => res.json())
+            .then(result => {
+              console.log(result)
+              localStorage.setItem("user", JSON.stringify({ ...state, pic: result.pic }))
+              dispatch({ type: "UPDATEPIC", payload: result.pic })
+              setOpen(!open)
+              return SetAlert({ isopen: true, type: "success", message: "Profile pic updated successfully" })
+            }).catch(err => {
+              console.log(err)
+            })
+        }).catch(err => {
+          console.log(err)
+        })
+    }
+
   }
   return (
     <>
@@ -98,6 +109,7 @@ const Profile = () => {
         }
 
       </div>
+      <Alerts alert={alert} Setalert={SetAlert} />
       <Backdrop className={classes.backdrop} open={open} >
         <CircularProgress color="inherit" />
       </Backdrop>

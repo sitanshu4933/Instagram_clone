@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useHistory } from 'react-router-dom'
+import { useHistory, Link } from 'react-router-dom'
 import Alerts from './Alerts'
 
 const Reset = () => {
@@ -26,13 +26,10 @@ const Reset = () => {
                 .then(data => {
                     console.log(data)
                     if (data.error) {
-                        return SetAlert({isopen:true,type:"error",message:data.error})
+                        return SetAlert({ isopen: true, type: "error", message: data.error })
                     }
                     else {
-                        SetAlert({isopen:true,type:"success",message:data.message})
-                        setTimeout(() => {
-                            history.push('/')
-                        }, 4000);
+                        SetAlert({ isopen: true, type: "success", message: data.message })
                     }
                 }).catch(err => {
                     console.log(err)

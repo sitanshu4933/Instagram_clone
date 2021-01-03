@@ -27,9 +27,9 @@ const NewPassword = () => {
 
                 }
                 else {
-                    SetAlert({ isopen: true, type: "success", message: "Logged in successfully" })
+                    SetAlert({ isopen: true, type: "success", message: "password reset successfull" })
                     setTimeout(() => {
-                        history.push('/')
+                        history.push('/login')
                     }, 4000);
                 }
             }).catch(err => {

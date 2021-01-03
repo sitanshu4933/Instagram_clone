@@ -12,6 +12,7 @@ import { reducer, intialstate } from './components/reducers/userReducer'
 import Reset from './components/screens/Reset'
 import NewPassword from './components/screens/NewPassword'
 import FollowingUserPosts from './components/screens/FollowingUserPosts'
+import NotFound from './components/screens/NotFound'
 
 
 export const UserContext = createContext()
@@ -35,19 +36,19 @@ const Routing = () => {
       <Route exact path="/">
         <Home />
       </Route>
-      <Route path="/login">
+      <Route exact path="/login">
         <Login />
       </Route>
-      <Route path="/signup">
+      <Route exact path="/signup">
         <Signup />
       </Route>
       <Route exact path="/profile">
         <Profile />
       </Route>
-      <Route path="/creatpost">
+      <Route exact path="/creatpost">
         <CreatPost />
       </Route>
-      <Route path="/profile/:userid">
+      <Route exact path="/profile/:userid">
         <UserProfile />
       </Route>
       <Route exact path="/reset">
@@ -56,8 +57,11 @@ const Routing = () => {
       <Route exact path="/reset/:token">
         <NewPassword />
       </Route>
-      <Route  path="/myfollowingpost">
+      <Route exact path="/myfollowingpost">
         <FollowingUserPosts />
+      </Route>
+      <Route >
+        < NotFound/>
       </Route>
     </Switch>
   )

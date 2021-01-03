@@ -81,7 +81,6 @@ export default function RecipeReviewCard() {
     }).then(res => res.json())
       .then(result => {
         console.log(result)
-        // console.log(newData?newData:"")
         const newData = data.map(item => {
           if (item._id == result._id) {
             return result
@@ -210,14 +209,10 @@ export default function RecipeReviewCard() {
           />
           <CardActions disableSpacing>
             <IconButton aria-label="add to favorites">
-              <FavoriteIcon />
-            </IconButton>
-            {item.likes.includes(state._id) ?
-              <ThumbDownIcon onClick={() => unlikePost(item._id)} /> :
-              <ThumbUpIcon onClick={() => likePost(item._id)} />
-            }
-            <IconButton aria-label="share">
-              <ShareIcon />
+              {item.likes.includes(state._id) ?
+                <ThumbDownIcon onClick={() => unlikePost(item._id)} /> :
+                <ThumbUpIcon onClick={() => likePost(item._id)} />
+              }
             </IconButton>
           </CardActions>
           <CardContent>

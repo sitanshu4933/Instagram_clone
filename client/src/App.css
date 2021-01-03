@@ -57,14 +57,13 @@
     justify-content: space-around;
     width: 10%;
     height: 10%;
-    border-radius: 200px;
     
 }
 .gallery{
     display: flex;
     flex-direction: row;
     margin-top: 20px;
-    justify-content: space-around;
+    justify-content: space-evenly;
     max-width: 1200px;
 }
 .link{

@@ -1,10 +1,12 @@
 import React, { useContext, useState } from 'react';
 import { useEffect } from 'react';
 import { UserContext } from '../../App'
-import { useParams } from 'react-router-dom'
+import { useParams, useHistory } from 'react-router-dom'
 import CircularProgress from '@material-ui/core/CircularProgress';
+import NotFound from './NotFound'
 
 const UserProfile = () => {
+  const history = useHistory()
   const [Profile, setProfile] = useState()
   const { state, dispatch } = useContext(UserContext)
   const [showFollow, setShowFollow] = useState(true)
@@ -16,8 +18,11 @@ const UserProfile = () => {
       },
     }).then(res => res.json())
       .then(result => {
-        console.log(result)
+        if (result.error) {
+          history.push('/NotFound')
+        } else {
           setProfile(result)
+        }
       })
   }, [userid])
 
@@ -75,7 +80,7 @@ const UserProfile = () => {
         })
         console.log(UserProfile)
       })
-      setShowFollow(true)
+    setShowFollow(true)
   }
   return (
     <>
@@ -104,7 +109,7 @@ const UserProfile = () => {
               <img key={item._id} src={item.photo} alt={item.title} />
             )
           }
-        </div></> :  <CircularProgress /> 
+        </div></> : <CircularProgress />
       }
     </>
   )

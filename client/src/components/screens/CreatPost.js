@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react'
+import TextField from '@material-ui/core/TextField';
 import Alerts from './Alerts'
 import { useHistory } from 'react-router-dom'
 import Backdrop from '@material-ui/core/Backdrop';
@@ -53,21 +54,30 @@ const CreatPost = () => {
         }
     }, [url])
     const postDetails = () => {
-        setOpen(!open)
-        const formData = new FormData()
-        formData.append("file", image)
-        formData.append("upload_preset", "insta-clone")
-        formData.append("cloud_name", "sitanshu")
-        fetch("https://api.cloudinary.com/v1_1/sitanshu/image/upload", {
-            method: 'post',
-            body: formData
-        }).then(res => res.json())
-            .then(data => {
-                console.log(data.url)
-                setUrl(data.url)
-            }).catch(err => {
-                console.log(err)
-            })
+        if (!title || !body || !image) {
+            return SetAlert({ isopen: true, type: "error", message:"Plz fillup all the fields" })
+        } else {
+            setOpen(!open)
+            const formData = new FormData()
+            formData.append("file", image)
+            formData.append("upload_preset", "insta-clone")
+            formData.append("cloud_name", "sitanshu")
+            fetch("https://api.cloudinary.com/v1_1/sitanshu/image/upload", {
+                method: 'post',
+                body: formData
+            }).then(res => res.json())
+                .then(data => {
+                    if (data.error) {
+                        return SetAlert({ isopen: true, type: "error", message: data.error })
+                    }
+                    else {
+                        console.log(data.url)
+                        setUrl(data.url)
+                    }
+                }).catch(err => {
+                    console.log(err)
+                })
+        }
     }
     return (
         <>
@@ -80,10 +90,10 @@ const CreatPost = () => {
                         <div className="file-field input-field">
                             <div className="btn">
                                 <span>Upload Image</span>
-                                <input type="file" onChange={(event) => { setImage(event.target.files[0])}} />
+                                <input type="file" onChange={(event) => { setImage(event.target.files[0]) }} />
                             </div>
                             <div className="file-path-wrapper">
-                                <input className="file-path validate" type="text"  />
+                                <input className="file-path validate" type="text" />
                             </div>
                         </div>
                         <button className="btn waves-effect waves-light #64b5f6 blue lighten-2" type="submit" name="action" onClick={() => postDetails()}>Submit</button>
