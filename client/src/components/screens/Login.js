@@ -52,6 +52,7 @@ const Login = () => {
                     <input type="password" placeholder="Password" value={password} onChange={(event) => SetPassword(event.target.value)} ></input>
                     <button className="btn waves-effect waves-light #64b5f6 blue lighten-2" type="submit" name="action" onClick={() => PostData()}>Login</button>
                     <Link to="/signup"> <h6>New User?click to signup</h6></Link>
+                    <Link to="/reset"> <h6>Forgot password?</h6></Link>
                 </div>
             </div>
             <Alerts alert={alert} Setalert={SetAlert} />
