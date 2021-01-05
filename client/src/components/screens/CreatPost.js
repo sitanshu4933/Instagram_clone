@@ -93,7 +93,7 @@ const CreatPost = () => {
                                 <input type="file" onChange={(event) => { setImage(event.target.files[0]) }} />
                             </div>
                             <div className="file-path-wrapper">
-                                <input className="file-path validate" type="text" />
+                                <input value={image?.name} className="file-path validate" type="text" />
                             </div>
                         </div>
                         <button className="btn waves-effect waves-light #64b5f6 blue lighten-2" type="submit" name="action" onClick={() => postDetails()}>Submit</button>
