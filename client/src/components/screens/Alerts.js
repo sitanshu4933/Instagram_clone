@@ -15,16 +15,17 @@ const useStyles = makeStyles((theme) => ({
 
 export default function CustomizedSnackbars(props) {
   const classes = useStyles();
-  const { alert, setalert } = props
+  const { alert, setAlert } = props
 
-  const [open, setOpen] = React.useState(alert.isopen);
+//   const [open, setOpen] = React.useState(alert.isopen);
 
   const handleClose = (event, reason) => {
     if (reason === 'clickaway') {
       return;
     }
-    setOpen(false) 
-    console.log(typeof(alert.isopen))
+    setAlert("");
+//     setOpen(false) 
+//     console.log(typeof(alert.isopen))
   };
   return (
     <div className={classes.root}>
