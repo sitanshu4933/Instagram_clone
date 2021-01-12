@@ -15,7 +15,7 @@ const useStyles = makeStyles((theme) => ({
 
 export default function CustomizedSnackbars(props) {
   const classes = useStyles();
-  const { alert, setAlert } = props
+  const { alert, SetAlert } = props
 
 //   const [open, setOpen] = React.useState(alert.isopen);
 
@@ -23,9 +23,7 @@ export default function CustomizedSnackbars(props) {
     if (reason === 'clickaway') {
       return;
     }
-    setAlert("");
-//     setOpen(false) 
-//     console.log(typeof(alert.isopen))
+    SetAlert("");
   };
   return (
     <div className={classes.root}>
