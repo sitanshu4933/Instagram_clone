@@ -18,7 +18,7 @@ const CreatPost = () => {
     const [body, setBody] = useState("")
     const [image, setImage] = useState("")
     const [url, setUrl] = useState("")
-    const [alert, SetAlert] = useState({ isopen: false, type: '', message: '' })
+    const [alert, setAlert] = useState({ isopen: false, type: '', message: '' })
     const classes = useStyles();
     const [open, setOpen] = React.useState(false);
 
@@ -100,7 +100,7 @@ const CreatPost = () => {
                     </div>
                 </div>
             }
-            <Alerts alert={alert} Setalert={SetAlert} />
+            <Alerts alert={alert} setAlert={setAlert} />
             <Backdrop className={classes.backdrop} open={open} >
                 <CircularProgress color="inherit" />
             </Backdrop>
